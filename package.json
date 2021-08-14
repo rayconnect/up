@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/main.ts",
   "bin": {
-    "rayconnect-up": "dist/src/main.js"
+    "rayconnect-up": "bin/index.js"
   },
   "scripts": {
     "start": "ts-node src/main.ts",
