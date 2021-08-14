@@ -1,0 +1,48 @@
+{
+  "name": "@rayconnect/up",
+  "version": "0.0.1-alpha",
+  "description": "",
+  "main": "src/main.ts",
+  "bin": {
+    "rayconnect-up": "dist/src/main.js"
+  },
+  "scripts": {
+    "start": "ts-node src/main.ts",
+    "start:dev": "ts-node-dev src/main.ts",
+    "build": "tsc --build"
+  },
+  "keywords": [
+    "rayconnect"
+  ],
+  "author": {
+    "name": "!Root",
+    "email": "iamnonroot@gmail.com",
+    "url": "https://iamroot.ir"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@iamnonroot/rayconnect-client": "^0.0.1-alpha",
+    "@types/cli-progress": "^3.9.2",
+    "archiver": "^5.3.0",
+    "chalk": "^4.1.2",
+    "cli-progress": "^3.9.0",
+    "commander": "^8.1.0",
+    "console-table-printer": "^2.10.0",
+    "figlet": "^1.5.2",
+    "form-data": "^4.0.0",
+    "got": "^11.8.2",
+    "prompts": "^2.4.1",
+    "rayconnect-client": "^0.11.63",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/archiver": "^5.1.1",
+    "@types/figlet": "^1.5.4",
+    "@types/node": "^13.13.52",
+    "@types/prompts": "^2.0.14",
+    "@types/uuid": "^8.3.1",
+    "ts-node": "^10.2.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.3.5"
+  }
+}
