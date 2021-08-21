@@ -7,9 +7,8 @@ const database = new Database<KeyValue>({ name: 'rayconnect' });
 
 const rayconnect = new Rayconnect({
     'aid': 'main',
-    'scopes': []
+    'scopes': ['_no_'],
 });
-
 
 rayconnect.auth.setCallback({
     getToken: () => {
@@ -23,7 +22,7 @@ rayconnect.auth.setCallback({
     }
 });
 
-rayconnect.auth.event(() => {
+rayconnect.auth.event(() => {    
     rayconnect.storage.from(Apps);
 });
 
