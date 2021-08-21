@@ -1,15 +1,19 @@
-import { LoadAndSaveStorage, Storage } from "@iamnonroot/rayconnect-client/core/storage";
+import { LoadAndSaveStorage, Storage } from "@iamnonroot/rayconnect-client/core";
 import { App } from "../interface/apps";
 
 @Storage({
     name: 'apps'
 })
 export class Apps extends LoadAndSaveStorage<App> {
-    public async add(app: App): Promise<void> {        
-        let index = this.items.findIndex((item) => item.domain == app.domain);
-        if (index == -1) {
-            this.items.push(app);
-            await this.save();
+    public async add(app: App): Promise<void> {
+        try {            
+            let index = this.items.findIndex((item) => item.domain == app.domain);
+            if (index == -1) {
+                this.items.push(app);                
+                await this.save();
+            }
+        } catch (error) {
+            return Promise.reject(error)
         }
     }
 
