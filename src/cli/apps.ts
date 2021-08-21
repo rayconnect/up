@@ -10,6 +10,7 @@ import { Rayconnect } from "@iamnonroot/rayconnect-client";
 // Storage
 import { Apps as AppsStorage } from "../core/apps";
 import { App } from "../interface/apps";
+import { Loading } from "../../lib/core/loading";
 
 @Command({
     name: 'app',
@@ -20,11 +21,18 @@ export class Apps extends ofCommandLine implements CommandLine {
     async run(args: IArg): Promise<void> {
         if (Object.keys(args).length == 0) this.showArgs();
         else {
+            let loading = new Loading('Logging in to your account ...');
+            await rayconnect.client.connected();
             let status = await rayconnect.auth.init();
-            if (status == false) this.needAuth();
+            if (status == false) {
+                loading.stop();
+                this.needAuth();
+            }
             else {
+                loading.message = 'Fetching your apps ...';
                 let apps: AppsStorage = rayconnect.storage.get('apps');
-                await apps.load();                
+                await apps.load();
+                loading.stop();
                 if (args['list'] && args['list'] == true) await this.list(apps.items);
                 if (args['add'] && args['add'] == true) await this.add();
             }
@@ -34,11 +42,6 @@ export class Apps extends ofCommandLine implements CommandLine {
     showArgs(): void {
         console.log('rayconnect-up app --list');
         console.log('rayconnect-up app --add');
-        this.exit();
-    }
-
-    needAuth(): void {
-        console.log(chalk.red('You must login via [rayconnect-up login]'));
         this.exit();
     }
 
@@ -68,7 +71,8 @@ export class Apps extends ofCommandLine implements CommandLine {
             {
                 name: 'domain',
                 type: 'text',
-                message: 'Domain:'
+                message: 'Domain:',
+                hint: 'Without HTTP/HTTPS'
             },
             {
                 name: 'username',
@@ -80,31 +84,61 @@ export class Apps extends ofCommandLine implements CommandLine {
                 type: 'password',
                 message: 'System admin password:'
             }
-        ]);
-
-        let rayconnectForApp = new Rayconnect({
-            aid: res.aid,
-            scopes: []
-        });
-
-        rayconnectForApp.auth.setCallback({
-            setToken: async (token: string) => {
-                await rayconnect.storage.get<AppsStorage>('apps').add({
-                    'aid': res.aid,
-                    'domain': res.domain,
-                    'token': token
-                });
-
-                console.log(chalk.green(`A new app that id is ${res.aid} and domain name is ${res.domain}, added successfully!`));
+        ], {
+            onCancel: () => {
+                console.log(chalk.red('You canceled or what ?'));
                 this.exit();
             }
         });
 
-        let status: boolean = await rayconnectForApp.auth.with({ username: res.username, password: res.password });
-        if (status == false) {
-            console.log(chalk.red('You have entered wrong username/password!'));
+        let loading = new Loading('Connecting to rayconnect ...');
+        
+        try {
+            let rayconnectForApp = new Rayconnect({
+                aid: res.aid,
+                scopes: ['_no_'],
+            });
+            
+            await rayconnectForApp.client.connected();
+            
+            loading.message = 'Authenticating ...';
+            
+            rayconnectForApp.auth.setCallback({
+                setToken: async (token: string) => {
+                    loading.stop();
+                    try {
+                        await rayconnect.storage.get<AppsStorage>('apps').add({
+                            'aid': res.aid,
+                            'domain': res.domain,
+                            'token': token
+                        });
+                        loading.stop();
+                        console.log(chalk.green(`A new app that id is ${res.aid} and domain name is ${res.domain}, added successfully!`));
+                        this.exit();
+
+                    } catch (error) {                        
+                        loading.stop();
+                        console.log(chalk.red('Save faild!'));
+                        this.exit();
+                    }
+
+                }
+            });
+
+
+            let status: boolean = await rayconnectForApp.auth.with({ username: res.username, password: res.password });
+
+            loading.message = 'Saving ...';
+
+            if (status == false) {
+                loading.stop();
+                console.log(chalk.red('You have entered wrong username/password!'));
+                this.exit();
+            }
+        } catch (error) {
+            loading.stop();
+            console.log(chalk.red('Error on login with this app!'));
             this.exit();
         }
-
     }
 }
