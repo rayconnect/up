@@ -1,8 +1,8 @@
 {
   "name": "@rayconnect/up",
-  "version": "0.0.1-alpha",
+  "version": "0.0.1-alpha-3",
   "description": "",
-  "main": "src/main.ts",
+  "main": "src/main.js",
   "bin": {
     "rayconnect-up": "bin/index.js"
   },
@@ -19,19 +19,26 @@
     "email": "iamnonroot@gmail.com",
     "url": "https://iamroot.ir"
   },
+  "homepage": "https://rayconnect.ir/package/rayconnect-up",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rayconnect/up"
+  },
   "license": "MIT",
   "dependencies": {
-    "@iamnonroot/rayconnect-client": "^0.0.1-alpha-2",
+    "@iamnonroot/rayconnect-client": "^0.0.1-alpha-10",
     "archiver": "^5.3.0",
     "chalk": "^4.1.2",
     "cli-progress": "^3.9.0",
+    "cli-spinners": "^2.6.0",
     "commander": "^8.1.0",
     "console-table-printer": "^2.10.0",
     "figlet": "^1.5.2",
     "form-data": "^4.0.0",
     "got": "^11.8.2",
+    "log-update": "^4.0.0",
     "prompts": "^2.4.1",
-    "rayconnect-client": "^0.11.63",
+    "rayconnect-client": "^0.11.64",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
