@@ -55,11 +55,6 @@ export class Deploy extends ofCommandLine implements CommandLine {
         }
     }
 
-    needAuth(): void {
-        console.log(chalk.red('You must login via [rayconnect-up login]'));
-        this.exit();
-    }
-
     async select(items: App[]): Promise<App | null> {
         let choises: Choice[] = items.map(item => {
             return {
