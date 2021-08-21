@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import commander from 'commander';
 import { ICommandOption } from '../interface/cli';
 
@@ -17,7 +18,7 @@ export class CLI {
                     for (let arg of options.args) cmd.option(arg, '');
                 }
                 cmd.description(options.description);
-                cmd.action(async (...args: any[]) => {                    
+                cmd.action(async (...args: any[]) => {
                     await run.bind(item, args[0]).apply();
                 });
             }
@@ -34,6 +35,11 @@ export class ofCommandLine {
 
     protected exit(): void {
         process.exit(0);
+    }
+
+    needAuth(): void {
+        console.log(chalk.red('You must login via [rayconnect-up login]'));
+        this.exit();
     }
 }
 
