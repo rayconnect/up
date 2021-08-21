@@ -1,29 +1,33 @@
 import chalk from "chalk";
 import figlet from "figlet";
 import prompts from "prompts";
-import data from '../../package.json';
+import { readFileSync } from "fs";
+import { join } from "path";
+
 // Command line
 import { CommandLine, IArg } from "../../lib/interface";
 import { Command, ofCommandLine } from "../../lib/core";
 
 let row: number = 30;
 
+let { name, version, license, author, dependencies } = JSON.parse(readFileSync(join(__dirname, "../../package.json")).toString());
+
 let items: { key: string, value: string }[] = [
     {
         'key': 'Package name',
-        'value': data.name,
+        'value': name,
     },
     {
         'key': 'Package version',
-        'value': data.version
+        'value': version
     },
     {
         'key': 'Package license',
-        'value': data.license
+        'value': license
     },
     {
         'key': 'Package auther',
-        'value': `${data.author.name} <${data.author.email}>`,
+        'value': `${author.name} <${author.email}>`,
     },
     {
         'key': 'NodeJS version',
@@ -31,7 +35,7 @@ let items: { key: string, value: string }[] = [
     },
     {
         'key': 'Client version',
-        'value': data.dependencies["rayconnect-client"].replace('^', '')
+        'value': dependencies["@iamnonroot/rayconnect-client"].replace('^', '')
     }
 ];
 
@@ -87,7 +91,7 @@ function writeEasterEgg(all: boolean = false) {
 })
 export class About extends ofCommandLine implements CommandLine {
 
-    async run(args: IArg): Promise<void> {        
+    async run(args: IArg): Promise<void> {
         let showAllEggs: boolean = args && args['allEggs'] ? args['allEggs'] as boolean : false;
         if (showAllEggs) {
             let res = await prompts({
@@ -101,9 +105,9 @@ export class About extends ofCommandLine implements CommandLine {
         else await this.doRun(false);
     }
 
-    async doRun(showAllEggs: boolean): Promise<void> {        
+    async doRun(showAllEggs: boolean): Promise<void> {
         this.line();
-        await logo();        
+        await logo();
         this.line();
         for (let item of items) await write(item.key, item.value);
         this.line();
